@@ -1,0 +1,11 @@
+.page-header {
+  background: map-get($colors, bg-gray);
+  
+}
+.headerRigtht {
+  background: map-get($colors, bg-gray);
+  flex: 0 0 100px;
+  max-width: 100px;
+  min-width: 100px;
+  width: 100px;
+}
