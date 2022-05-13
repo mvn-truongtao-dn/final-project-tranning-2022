@@ -16,3 +16,6 @@ export const apiUserUpdate = (id,data) => {
 export const apiUserDelete = (id) => {
   return api.delete(`${ENDPOINTS.users}/${id}`);
 }
+export const apiUserSearch = (params) => {
+  return api.get(`${ENDPOINTS.users}?Firstname=${params}`);
+}

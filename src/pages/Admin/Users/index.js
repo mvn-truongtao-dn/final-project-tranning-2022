@@ -1,13 +1,48 @@
 import React, { useState } from "react";
-import { Table, Breadcrumb, Space, Button } from "antd";
+import {
+  Table,
+  Breadcrumb,
+  Space,
+  Button,
+  Col,
+  Row,
+  Form,
+  Input,
+  Modal,
+  notification,
+} from "antd";
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  FolderViewOutlined,
+  SearchOutlined,
+  SmileOutlined,
+} from "@ant-design/icons";
+
 import { useDispatch, useSelector } from "react-redux";
 import FormUser from "../../../components/modules/FormUser.js";
-import Modal from "antd/lib/modal/Modal";
 import { deleteUser } from "../../../store/userSlice.js";
 import { apiUserDelete } from "../../../api/user/user.api.js";
+import useCustomSearchParams from "../../../hooks/searchParams.js";
+import DetailsUser from "../../../components/modules/DetailsUser/index.js";
+import { SearchParams } from "../../../core/FilterFuction.js";
+import { Link } from "react-router-dom";
+const layout = {
+  labelCol: {
+    span: 5,
+  },
+  wrapperCol: {
+    span: 20,
+  },
+};
 
 export default function Users() {
-  const dispatch = useDispatch()
+  const [search, setSearch] = useCustomSearchParams();
+  const [form] = Form.useForm();
+  const [isModalFilter, setIsModalFilter] = useState(false);
+  const [isModalDetailsUser, setIsModalDetailsUser] = useState(false);
+  const [isModalDeleteUser, setIsModalDeleteUser] = useState(false);
+  const dispatch = useDispatch();
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
@@ -43,9 +78,23 @@ export default function Users() {
     setIsModalVisible(true);
     setUser(data);
   };
-  const handleDelete = (id,data) => {
-    apiUserDelete(id);
-    dispatch(deleteUser(data));
+
+  const handleDelete = (id, data) => {
+    setIsModalDeleteUser(true);
+    setUser(data);
+  };
+  const handleModalDeleteUser = () => {
+    console.log(user);
+    apiUserDelete(user.key);
+    dispatch(deleteUser(user));
+    notification.open({
+      message: "Success Delete",
+      icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+    });
+    setIsModalDeleteUser(false);
+  };
+  const handleModalCancelDeleteUser = () => {
+    setIsModalDeleteUser(false);
   };
   console.log(user);
   console.log(users);
@@ -53,7 +102,6 @@ export default function Users() {
     {
       title: "First Name",
       dataIndex: "first_name",
-      render: (text) => <a>{text}</a>,
     },
     {
       title: "Last Name",
@@ -85,6 +133,13 @@ export default function Users() {
       render: (text, record) => (
         <Space size="middle">
           <Button
+            icon={<FolderViewOutlined />}
+            onClick={() => showModalDetailsUser(record)}
+          >
+            View
+          </Button>
+
+          <Button
             type="primary"
             onClick={() => handleUpdate(record.key, record)}
           >
@@ -92,6 +147,7 @@ export default function Users() {
           </Button>
           <Button
             type="primary"
+            icon={<DeleteOutlined />}
             danger
             onClick={() => handleDelete(record.key, record)}
           >
@@ -102,7 +158,13 @@ export default function Users() {
     },
   ];
   const data = [];
-  users.map((item, index) => {
+  form.setFieldsValue({
+    Firstname: search.Firstname,
+    Lastname: search.Lastname,
+    Phone: search.Phone,
+  });
+
+  users.filter(SearchParams(search)).map((item, index) => {
     data.push({
       key: item.id,
       first_name: item.Firstname,
@@ -116,17 +178,94 @@ export default function Users() {
       medicine: item.Medicine,
     });
   });
+  const showModalFilter = () => {
+    setIsModalFilter(true);
+  };
+  const handleCancelFilter = () => {
+    setIsModalFilter(false);
+  };
+
+  const onFinish = (value) => {
+    setSearch({
+      Firstname: value.Firstname,
+      Lastname: value.Lastname,
+      Phone: value.Phone,
+    });
+  };
+  const showModalDetailsUser = (data) => {
+    setIsModalDetailsUser(true);
+    setUser(data);
+  };
+  const handleCancelViewUser = () => {
+    setIsModalDetailsUser(false);
+  };
+  const handleGetAllUser = (user) => {
+    setSearch({ Firstname: "", Lastname: "", Phone: "" });
+  };
   return (
     <div className="site-layout-background">
-      <Breadcrumb>
-        <Breadcrumb.Item>Admin</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Users</a>
-        </Breadcrumb.Item>
-      </Breadcrumb>
-      <Button type="primary" onClick={showModal}>
-        Create
-      </Button>
+      <Row className="border-bottom">
+        <Col span={4}>
+          <Breadcrumb>
+            <Breadcrumb.Item>Admin</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to="/users">Users</Link>
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+        <Col span={4} offset={16}>
+          <Button
+            icon={<PlusOutlined />}
+            type="primary"
+            onClick={showModal}
+            className="btn-create-user"
+          >
+            Create
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={4}>
+          <Button type="link" className="btn-margin" onClick={handleGetAllUser}>
+            All
+          </Button>
+        </Col>
+        <Col span={4} offset={16}>
+          <Button
+            type="primary"
+            onClick={showModalFilter}
+            icon={<SearchOutlined />}
+            className="btn-margin btn-create-user"
+          >
+            Filter
+          </Button>
+        </Col>
+      </Row>
+
+      <Modal
+        visible={isModalFilter}
+        onCancel={handleCancelFilter}
+        title="Filter User"
+        footer={null}
+      >
+        <Form onFinish={onFinish} {...layout} form={form}>
+          <Form.Item label="FirstName" name="Firstname">
+            <Input></Input>
+          </Form.Item>
+          <Form.Item label="Lastname" name="Lastname">
+            <Input></Input>
+          </Form.Item>
+          <Form.Item label="Phone" name="Phone">
+            <Input></Input>
+          </Form.Item>
+          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 5 }}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
       <Modal
         title="Form Users"
         footer={null}
@@ -142,6 +281,22 @@ export default function Users() {
         />
       </Modal>
       <Table columns={columns} dataSource={data} />
+      <Modal
+        visible={isModalDetailsUser}
+        onCancel={handleCancelViewUser}
+        footer={null}
+        width={1000}
+      >
+        <DetailsUser data={user} />
+      </Modal>
+      <Modal
+        visible={isModalDeleteUser}
+        onOk={handleModalDeleteUser}
+        onCancel={handleModalCancelDeleteUser}
+        title="Confirm"
+      >
+        <p>Please Cofirm!</p>
+      </Modal>
     </div>
   );
 }

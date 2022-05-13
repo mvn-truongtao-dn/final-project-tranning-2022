@@ -18,7 +18,7 @@ function getItem(label, key, icon, children) {
 }
 const items = [
   getItem(<Link to="/">Dashboard</Link>, "1", <DesktopOutlined />),
-  getItem(<Link to="users">Users</Link>, "2", <UserOutlined />),
+  getItem(<Link to="/users">Users</Link>, "2", <UserOutlined />),
   // getItem("Team", "sub2", <TeamOutlined />, [
   //   getItem("Team 1", "6"),
   //   getItem("Team 2", "8"),

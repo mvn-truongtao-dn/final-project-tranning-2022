@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, InputNumber, Button, Select } from "antd";
+import { Form, Input, InputNumber, Button, Select, notification } from "antd";
 import { Option } from "antd/lib/mentions";
 import { useDispatch, useSelector } from "react-redux";
 import { postUser, updateUser } from "../../../store/userSlice";
 import { apiUserPost, apiUserUpdate } from "../../../api/user/user.api";
 import Modal from "antd/lib/modal/Modal";
+import { SmileOutlined } from "@ant-design/icons";
 
 const layout = {
   labelCol: {
@@ -16,24 +17,27 @@ const layout = {
 };
 const prefixSelector = (
   <Form.Item name={["user", "prefix"]} noStyle>
-    <Select  style={{
-          width: 70,
-        }} defaultValue="84">
-          <Option value="84">+84</Option>
+    <Select
+      style={{
+        width: 70,
+      }}
+      defaultValue="84"
+    >
+      <Option value="84">+84</Option>
     </Select>
   </Form.Item>
 );
 
-const validateMessages = {
-  required: "${label} is required!",
-  types: {
-    email: "${label} is not a valid email!",
-    number: "${label} is not a valid number!",
-  },
-  number: {
-    range: "${label} must be between ${min} and ${max}",
-  },
-};
+// const validateMessages = {
+//   required: "${label} is required!",
+//   types: {
+//     email: "${label} is not a valid email!",
+//     number: "${label} is not a valid number!",
+//   },
+//   number: {
+//     range: "${label} must be between ${min} and ${max}",
+//   },
+// };
 export default function FormUser(props) {
   const users = useSelector((state) => state.users.value);
   const [data, setData] = useState();
@@ -49,6 +53,7 @@ export default function FormUser(props) {
     result,
     totalPrice,
     key,
+    gender,
   } = props.data;
   console.log(props.data);
   useEffect(() => {
@@ -62,6 +67,7 @@ export default function FormUser(props) {
         totalprice: totalPrice,
         age: age,
         address: address,
+        gender: gender,
       },
     });
   });
@@ -73,53 +79,41 @@ export default function FormUser(props) {
     setVisible(true);
     console.log(users);
     console.log(key);
-    const index = users.findIndex(
-      (object) => (object.id) === parseFloat(key)
-    );
+    const index = users.findIndex((object) => object.id === parseFloat(key));
     console.log(`submit ${index}`);
     const dataChange = {
       Firstname: values.user.first_name,
       Lastname: values.user.last_name,
       Phone: values.user.phone,
       Result: values.user.result,
+      Address: values.user.address,
       TotalPrice: values.user.totalprice,
       Medicine: values.user.medicine,
       Age: values.user.age,
       Gender: values.user.gender,
-      // Address: values.user,
     };
-    // setData({
-    //   Firstname: values.user.first_name,
-    //   Lastname: values.user.last_name,
-    //   Phone: values.user.phone,
-    //   Result: values.user.result,
-    //   TotalPrice: values.user.totalprice,
-    //   Medicine: values.user.medicine,
-    //   Age: values.user.age,
-    //   Gender: false,
-    // });
-    // index !== -1 ? apiUserUpdate(key, data) : apiUserPost(data);
-    // if (index !== -1) {
-    //   apiUserUpdate(key, data);
-    //   dispatch(updateUser({ key, data }));
-    // } else {
-    //   apiUserPost(data);
-    //   dispatch(postUser(data));
-    // }
+
     props.handleCancel();
-    // console.log(process.env.REACT_APP_TEST);
     setData(dataChange);
   };
   const hideModal = () => {
-    const index = users.findIndex((object) => (object.id) === (key));
+    const index = users.findIndex((object) => object.id === key);
     console.log(`hidemodal${index}`);
     if (index !== -1) {
       apiUserUpdate(key, data);
       dispatch(updateUser({ key, data }));
+      notification.open({
+        message: "Success Updated",
+        icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+      });
     } else {
       apiUserPost(data);
-      const id_new = parseInt(users[users.length-1].id) + 1;
+      const id_new = parseInt(users[users.length - 1].id) + 1;
       dispatch(postUser({ id_new, data }));
+      notification.open({
+        message: "Success Created",
+        icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+      });
     }
     setVisible(false);
   };
@@ -133,7 +127,6 @@ export default function FormUser(props) {
       name="nest-messages"
       form={form}
       onFinish={onFinish}
-      validateMessages={validateMessages}
     >
       <Form.Item
         name={["user", "first_name"]}
@@ -149,6 +142,17 @@ export default function FormUser(props) {
       <Form.Item
         name={["user", "last_name"]}
         label="Last Name"
+        rules={[
+          {
+            // required: true,
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name={["user", "address"]}
+        label="Address"
         rules={[
           {
             // required: true,

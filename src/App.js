@@ -2,15 +2,15 @@ import { Layout } from "antd";
 
 import React, { useEffect } from "react";
 
-import SidebarMenu from "./components/layouts/SidebarMenu.js";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import Admin from "./pages/Admin/index.js";
-import HeaderCustom from "./components/layouts/HeaderCustom/index.js";
+import { Route, Routes } from "react-router-dom";
+
 import "./assets/scss/styles.scss";
+
 import { apiUserGetList } from "./api/user/user.api.js";
 import { getListUsers } from "./store/userSlice.js";
-import { useDispatch, useSelector } from "react-redux";
-const { Header, Content, Footer, Sider } = Layout;
+import { useDispatch } from "react-redux";
+import PrivateRoute from "./core/guards/PrivateRoute.js";
+import Login from "./pages/auth/Login";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,22 +27,13 @@ function App() {
           minHeight: "100vh",
         }}
       >
-        <SidebarMenu></SidebarMenu>
-        <Layout className="site-layout">
-          <HeaderCustom />
-          <Content className="page-main">
-            <Routes>
-              <Route path="/*" element={<Admin />} />
-            </Routes>
-          </Content>
-          <Footer
-            style={{
-              textAlign: "center",
-            }}
-          >
-            Copy ©2022 Created by Truong
-          </Footer>
-        </Layout>
+        <Routes>
+          {/* <PrivateRoute path="/" element={<Admin />} /> */}
+          <Route exact path="/*" element={<PrivateRoute />} />
+
+          {/* <Route path="/*" element={<Admin />} /> */}
+          <Route path="/login" element={<Login />} />
+        </Routes>
       </Layout>
     </>
   );

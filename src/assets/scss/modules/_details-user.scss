@@ -1,0 +1,15 @@
+.title-user {
+  font-weight: map-get($map: $font-weight, $key: bold);
+  color: map-get($map: $colors, $key: blue-5);
+  .info-user {
+    font-size: $font-size-lg;
+    font-weight: map-get($map: $font-weight, $key: normal);
+    color: map-get($map: $colors, $key: txt-black);
+  }
+}
+.title-info {
+  color: map-get($map: $colors, $key: blue-5);
+}
+.title-name {
+  color: map-get($map: $colors, $key: red-6);
+}

@@ -1,6 +1,20 @@
 .page-header {
-  background: map-get($colors, bg-gray);
-  
+  background: #f0f2f5 !important;
+  .btn-logout {
+    font-size: 20px;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+  .info-user {
+    display: inline-block;
+    font-size: 20px;
+    margin-right: 30px;
+    .name-user {
+      color: map-get($map: $colors, $key: brand-css);
+    }
+  }
 }
 .headerRigtht {
   background: map-get($colors, bg-gray);
