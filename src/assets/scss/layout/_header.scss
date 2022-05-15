@@ -23,3 +23,10 @@
   min-width: 100px;
   width: 100px;
 }
+
+@media screen and (max-width: 575px) {
+  .title-admin {
+    font-size: $font-size-lg*1.5;
+    font-weight: map-get($map: $font-weight, $key: bold);
+  }
+}

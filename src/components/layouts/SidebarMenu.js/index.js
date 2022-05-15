@@ -30,6 +30,7 @@ function SidebarMenu() {
   return (
     <Sider
       collapsible
+      breakpoint="lg"
       collapsed={collapsed}
       onCollapse={() => setCollapsed(!collapsed)}
     >

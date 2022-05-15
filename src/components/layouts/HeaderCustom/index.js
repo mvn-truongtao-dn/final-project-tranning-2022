@@ -51,10 +51,12 @@ export default function HeaderCustom() {
         {/* <Content></Content>
         <Sider className={style.headerRigtht}></Sider> */}
         <Row>
-          <Col span={6} offset={2}>
-            <h1>Wellcome to Admin</h1>
+        {/* span={6} offset={2} */}
+          <Col span={22}  >
+            <h1 className="title-admin">Wellcome to Admin</h1>
           </Col>
-          <Col span={2} offset={14}>
+          {/* span={2} offset={14} */}
+          <Col span={2}>
             <div className="info-user">
               <Dropdown overlay={menu} placement="bottomRight">
                 <Button>

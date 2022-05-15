@@ -1,11 +1,16 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import { useDispatch } from "react-redux";
+import { Navigate } from "react-router-dom";
 import userAuth from "../../../hooks/userAuth";
 import { getUserLogin, getValueUser } from "../../../store/userLoginSlice";
 
 export default function Login() {
   const { login } = userAuth();
-  const dispatch = useDispatch();
+  const user = localStorage.getItem("user");
+  console.log(user);
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
   const onFinish = (values) => {
     login(values.email,values.password);
   };

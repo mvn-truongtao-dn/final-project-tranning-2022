@@ -10,6 +10,8 @@ import {
   Input,
   Modal,
   notification,
+  Dropdown,
+  Menu,
 } from "antd";
 import {
   DeleteOutlined,
@@ -17,6 +19,8 @@ import {
   FolderViewOutlined,
   SearchOutlined,
   SmileOutlined,
+  DownOutlined,
+  EllipsisOutlined,
 } from "@ant-design/icons";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -110,26 +114,32 @@ export default function Users() {
     {
       title: "Address",
       dataIndex: "address",
+      responsive: ['lg']
     },
     {
       title: "Phone",
       dataIndex: "phone",
+      responsive: ['lg']
     },
     {
       title: "Age",
       dataIndex: "age",
+      responsive: ['sm']
     },
     {
       title: "TotalPrice",
       dataIndex: "totalPrice",
+      responsive: ['xl']
     },
     {
       title: "Gender",
       dataIndex: "gender",
+      responsive: ['sm']
     },
     {
       title: "Action",
       dataIndex: "action",
+      responsive: ["md"],
       render: (text, record) => (
         <Space size="middle">
           <Button
@@ -154,6 +164,60 @@ export default function Users() {
             Delete
           </Button>
         </Space>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      responsive: ["xs"],
+      render: (text, record) => (
+        <Dropdown
+          overlay={
+            <Menu
+              items={[
+                {
+                  label: (
+                    <Button
+                      icon={<FolderViewOutlined />}
+                      onClick={() => showModalDetailsUser(record)}
+                    >
+                      View
+                    </Button>
+                  ),
+                },
+                {
+                  label: (
+                    <Button
+                      type="primary"
+                      onClick={() => handleUpdate(record.key, record)}
+                    >
+                      Update
+                    </Button>
+                  ),
+                },
+                {
+                  label: (
+                    <Button
+                      type="primary"
+                      icon={<DeleteOutlined />}
+                      danger
+                      onClick={() => handleDelete(record.key, record)}
+                    >
+                      Delete
+                    </Button>
+                  ),
+                },
+              ]}
+            />
+          }
+        >
+          <a onClick={(e) => e.preventDefault()}>
+            <Space>
+            <EllipsisOutlined />
+              <DownOutlined />
+            </Space>
+          </a>
+        </Dropdown>
       ),
     },
   ];
