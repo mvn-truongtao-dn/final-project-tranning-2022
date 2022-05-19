@@ -297,7 +297,7 @@ export default function Users() {
             </Breadcrumb.Item>
           </Breadcrumb>
         </Col>
-        <Col span={2} xs={6} sm={3} xl={2} >
+        <Col span={2} xs={6} sm={3} xl={2}>
           <Link to="create">
             <Button
               icon={<PlusOutlined />}
@@ -316,7 +316,7 @@ export default function Users() {
             All
           </Button>
         </Col>
-        <Col span={22} xs={24} sm={20} lg={20} xl={22} >
+        <Col span={22} xs={24} sm={20} lg={20} xl={22}>
           <Form
             onFinish={onFinish}
             {...layout}
@@ -324,28 +324,28 @@ export default function Users() {
             className="form-search"
           >
             <Row>
-              <Col className="gutter-row" span={7} xs={24} sm={24} lg={12} xl={8}>
+              <Col span={7} xs={24} sm={24} lg={12} xl={8}>
                 <Form.Item label="FirstName" name="Firstname">
                   <Input></Input>
                 </Form.Item>
               </Col>
-              <Col className="gutter-row" span={7} xs={24} sm={24} lg={12} xl={8}>
+              <Col span={7} xs={24} sm={24} lg={12} xl={7}>
                 <Form.Item label="Lastname" name="Lastname">
                   <Input></Input>
                 </Form.Item>
               </Col>
-              <Col className="gutter-row" span={7}xs={24} sm={24} lg={12} xl={8}>
-                <Form.Item
-                  label="Phone"
-                  name="Phone"
-                  maxLength={50}
-                >
-                  <Input ></Input>
+              <Col span={7} xs={24} sm={24} lg={12} xl={7}>
+                <Form.Item label="Phone" name="Phone" maxLength={50}>
+                  <Input></Input>
                 </Form.Item>
               </Col>
-              <Col>
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" hidden>
+              <Col xs={24} sm={24} lg={12} xl={2}>
+                <Form.Item wrapperCol={{offset:2}}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="btn-search"
+                  >
                     Submit
                   </Button>
                 </Form.Item>

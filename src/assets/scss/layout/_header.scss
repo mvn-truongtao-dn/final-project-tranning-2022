@@ -10,7 +10,6 @@
   }
   .info-user {
     display: inline-block;
-    margin-right: 5px;
     float: right;
     font-size: 20px;
     // margin-right: 30px;
@@ -19,9 +18,7 @@
     }
   }
 }
-.form-search {
-  padding: 10px;
-}
+
 .headerRigtht {
   background: map-get($colors, bg-gray);
   flex: 0 0 100px;
