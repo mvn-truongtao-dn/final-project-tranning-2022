@@ -1,9 +1,10 @@
 import React from "react";
 import { Column } from "@ant-design/plots";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Col, Row } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import a, { groupBy } from "lodash";
 import moment from "moment";
+import { Link } from "react-router-dom";
 export default function Dashboard() {
   const users = JSON.parse(
     JSON.stringify(useSelector((state) => state.users.value))
@@ -58,13 +59,26 @@ export default function Dashboard() {
 
   return (
     <div className="site-layout-background">
-      <Breadcrumb>
-        <Breadcrumb.Item>Admin</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Dashboard</a>
-        </Breadcrumb.Item>
-      </Breadcrumb>
-      <Column {...config} className="chart-custom" />
+      <Row className="border-bottom">
+        <Col span="24">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <span className="title-page">Admin</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to="">
+                <span className="title-page">Dashboard</span>
+              </Link>
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
+
+      <Column
+        {...config}
+        className="chart-custom"
+        className="dashboard-turnover"
+      />
     </div>
   );
 }

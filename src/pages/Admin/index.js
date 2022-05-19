@@ -5,6 +5,9 @@ import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import HeaderCustom from "../../components/layouts/HeaderCustom/index.js";
 import SidebarMenu from "../../components/layouts/SidebarMenu.js";
+import FormUser from "../../components/modules/FormUser.js/index.js";
+import CreateUser from "./Users/CreateUser/inedx.js";
+import UpdateUser from "./Users/UpdateUser/index.js";
 // import Dashboard from "./Dashboard";
 // import Users from "./Users";
 
@@ -18,10 +21,16 @@ export default function Admin() {
       <Layout className="site-layout">
         <HeaderCustom />
         <Content className="page-main">
-          <Suspense fallback={<Spin />}>
+          <Suspense fallback={<Spin className="loading"/>}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/users" element={<Users />} />
+              <Route path="users" element={<Users />} />
+              <Route path="users">
+                <Route path=":userId">
+                  <Route path="edit" element={<UpdateUser />} />
+                </Route>
+                <Route path="create" element={<CreateUser />} />
+              </Route>
             </Routes>
           </Suspense>
         </Content>

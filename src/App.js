@@ -28,11 +28,9 @@ function App() {
         }}
       >
         <Routes>
-          {/* <PrivateRoute path="/" element={<Admin />} /> */}
           <Route exact path="/*" element={<PrivateRoute />} />
-
-          {/* <Route path="/*" element={<Admin />} /> */}
-          <Route path="/login" element={<Login />} />
+          <Route path="login" element={<Login />}>
+          </Route>
         </Routes>
       </Layout>
     </>

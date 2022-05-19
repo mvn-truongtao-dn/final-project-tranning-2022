@@ -25,7 +25,7 @@ export const userSlice = createSlice({
     updateUser: (state, action) => {
       console.log("updateuser");
       const index = state.value.findIndex(
-        (object) => object.id === action.payload.key
+        (object) => object.id === action.payload.id
       );
       console.log(index);
       console.log(action.payload.data);

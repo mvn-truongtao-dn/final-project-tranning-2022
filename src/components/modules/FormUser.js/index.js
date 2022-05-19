@@ -3,16 +3,23 @@ import { Form, Input, InputNumber, Button, Select, notification } from "antd";
 import { Option } from "antd/lib/mentions";
 import { useDispatch, useSelector } from "react-redux";
 import { postUser, updateUser } from "../../../store/userSlice";
-import { apiUserPost, apiUserUpdate } from "../../../api/user/user.api";
+import {
+  apiUserDetails,
+  apiUserPost,
+  apiUserUpdate,
+} from "../../../api/user/user.api";
 import Modal from "antd/lib/modal/Modal";
-import { SmileOutlined } from "@ant-design/icons";
+import { SmileOutlined, UploadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import Upload from "antd/lib/upload/Upload";
+import { set } from "lodash";
 
 const layout = {
   labelCol: {
-    span: 7,
+    span: 4,
   },
   wrapperCol: {
-    span: 20,
+    span: 18,
   },
 };
 const prefixSelector = (
@@ -28,59 +35,83 @@ const prefixSelector = (
   </Form.Item>
 );
 
-// const validateMessages = {
-//   required: "${label} is required!",
-//   types: {
-//     email: "${label} is not a valid email!",
-//     number: "${label} is not a valid number!",
-//   },
-//   number: {
-//     range: "${label} must be between ${min} and ${max}",
-//   },
-// };
 export default function FormUser(props) {
   const users = useSelector((state) => state.users.value);
   const [data, setData] = useState();
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState([]);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [phone, setPhone] = useState("");
+  const [result, setResult] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [medicine, setMedicine] = useState("");
+  const [age, setAge] = useState(0);
+  const [gender, setGender] = useState("");
+  const [address, setAddress] = useState("");
+  const [avatar, setAvatar] = useState("");
+
+  const [user, setUser] = useState({
+    Firstname: "",
+    Lastname: "",
+    Phone: "",
+    Result: "",
+    TotalPrice: 0,
+    Medicine: "",
+    Age: 0,
+    Gender: "",
+    Address: "",
+    Avatar: "",
+  });
+  let navigate = useNavigate();
+
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
-  const {
-    first_name,
-    last_name,
-    address,
-    age,
-    medicine,
-    phone,
-    result,
-    totalPrice,
-    key,
-    gender,
-  } = props.data;
+
   console.log(props.data);
+
   useEffect(() => {
-    form.setFieldsValue({
-      user: {
-        first_name: first_name,
-        last_name: last_name,
-        phone: phone,
-        medicine: medicine,
-        result: result,
-        totalprice: totalPrice,
-        age: age,
-        address: address,
-        gender: gender,
-      },
+    apiUserDetails(props.userId).then((e) => {
+      console.log(e.data);
+      // setUser(e.data);
+      setFirstname(e.data.Firstname);
+      setLastname(e.data.Lastname);
+      setAddress(e.data.Address);
+      setPhone(e.data.Phone);
+      setGender(e.data.Gender);
+      setMedicine(e.data.Medicine);
+      setTotalPrice(e.data.TotalPrice);
+      setResult(e.data.Result);
+      setAge(e.data.Age);
+      setFileList(e.data.Avatar);
+      console.log(fileList);
     });
+    console.log(user);
+  }, []);
+  console.log(fileList);
+  form.setFieldsValue({
+    user: {
+      first_name: firstname,
+      last_name: lastname,
+      phone: phone,
+      medicine: medicine,
+      result: result,
+      totalprice: totalPrice,
+      age: age,
+      address: address,
+      gender: gender,
+      avatar: fileList,
+    },
   });
 
   const dispatch = useDispatch();
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     console.log(values);
-    console.log(props.data);
     setVisible(true);
-    console.log(users);
-    console.log(key);
-    const index = users.findIndex((object) => object.id === parseFloat(key));
-    console.log(`submit ${index}`);
+    console.log(fileList);
+    console.log(values.user.avatar);
+    console.log(values.user.first_name);
     const dataChange = {
       Firstname: values.user.first_name,
       Lastname: values.user.last_name,
@@ -91,17 +122,25 @@ export default function FormUser(props) {
       Medicine: values.user.medicine,
       Age: values.user.age,
       Gender: values.user.gender,
+      Avatar: fileList,
     };
 
-    props.handleCancel();
+    console.log(dataChange);
     setData(dataChange);
+    // setUser(dataChange);
+  };
+
+  const handleUpload = ({ fileList }) => {
+    setFileList(fileList);
+    console.log(fileList);
   };
   const hideModal = () => {
-    const index = users.findIndex((object) => object.id === key);
+
+    const index = users.findIndex((object) => object.id === props.userId);
     console.log(`hidemodal${index}`);
     if (index !== -1) {
-      apiUserUpdate(key, data);
-      dispatch(updateUser({ key, data }));
+      apiUserUpdate(props.userId, data);
+      dispatch(updateUser({ id: props.userId, data }));
       notification.open({
         message: "Success Updated",
         icon: <SmileOutlined style={{ color: "#108ee9" }} />,
@@ -115,19 +154,19 @@ export default function FormUser(props) {
         icon: <SmileOutlined style={{ color: "#108ee9" }} />,
       });
     }
+    navigate("/users", { replace: true });
     setVisible(false);
   };
-  console.log(users);
+  const handleChange = (e) => {
+    console.log(e.target.value);
+  };
+
   const hideModal1 = () => {
     setVisible(false);
   };
+
   return (
-    <Form
-      {...layout}
-      name="nest-messages"
-      form={form}
-      onFinish={onFinish}
-    >
+    <Form {...layout} name="nest-messages" form={form} onFinish={onFinish}>
       <Form.Item
         name={["user", "first_name"]}
         label="First Name"
@@ -137,7 +176,7 @@ export default function FormUser(props) {
           },
         ]}
       >
-        <Input />
+        <Input onChange={(e) => setFirstname(e.target.value)} />
       </Form.Item>
       <Form.Item
         name={["user", "last_name"]}
@@ -148,7 +187,7 @@ export default function FormUser(props) {
           },
         ]}
       >
-        <Input />
+        <Input onChange={(e) => setLastname(e.target.value)} />
       </Form.Item>
       <Form.Item
         name={["user", "address"]}
@@ -159,7 +198,7 @@ export default function FormUser(props) {
           },
         ]}
       >
-        <Input />
+        <Input onChange={(e) => setAddress(e.target.value)} />
       </Form.Item>
       <Form.Item
         name={["user", "phone"]}
@@ -176,6 +215,7 @@ export default function FormUser(props) {
           style={{
             width: "100%",
           }}
+          onChange={(e) => setPhone(e.target.value)}
         />
       </Form.Item>
       <Form.Item
@@ -189,16 +229,18 @@ export default function FormUser(props) {
           },
         ]}
       >
-        <InputNumber />
+        <InputNumber onChange={(value) => setAge(value)} />
       </Form.Item>
       <Form.Item name={["user", "result"]} label="Result">
-        <Input.TextArea />
+        <Input.TextArea onChange={(e) => setResult(e.target.value)} />
       </Form.Item>
       <Form.Item name={["user", "gender"]} label="Gender">
         <Select
           style={{
             width: 100,
           }}
+          defaultValue="male"
+          onChange={(value) => setGender(value)}
         >
           <Option value="male">Male</Option>
           <Option value="female">Female</Option>
@@ -206,7 +248,7 @@ export default function FormUser(props) {
       </Form.Item>
 
       <Form.Item name={["user", "medicine"]} label="Medicine">
-        <Input.TextArea />
+        <Input.TextArea onChange={(e) => setMedicine(e.target.value)} />
       </Form.Item>
       <Form.Item
         name={["user", "totalprice"]}
@@ -219,8 +261,30 @@ export default function FormUser(props) {
           },
         ]}
       >
-        <InputNumber />
+        <InputNumber onChange={(value) => setTotalPrice(value)} />
       </Form.Item>
+
+      <Form.Item name={["user", "avatar"]} label="Avatar">
+        <Upload
+          listType="picture-card"
+          fileList={fileList}
+          // onPreview={handlePreview}
+          onChange={handleUpload}
+          beforeUpload={() => false}
+        >
+          <Button>Upload</Button>
+        </Upload>
+        {/* <Button
+          onClick={handleSubmitUpload} // this button click will trigger the manual upload
+        >
+          Submit
+        </Button> */}
+
+        {/* <Modal visible={previewVisible} footer={null}>
+          <img alt="example" style={{ width: "100%" }} src={previewImage} />
+        </Modal> */}
+      </Form.Item>
+
       <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
         <Button type="primary" htmlType="submit">
           Submit

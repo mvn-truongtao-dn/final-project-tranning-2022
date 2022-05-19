@@ -1,5 +1,6 @@
 .page-header {
   background: #f0f2f5 !important;
+  padding: 0 10px 10px 10px !important;
   .btn-logout {
     font-size: 20px;
     cursor: pointer;
@@ -9,12 +10,17 @@
   }
   .info-user {
     display: inline-block;
+    margin-right: 5px;
+    float: right;
     font-size: 20px;
-    margin-right: 30px;
+    // margin-right: 30px;
     .name-user {
       color: map-get($map: $colors, $key: brand-css);
     }
   }
+}
+.form-search {
+  padding: 10px;
 }
 .headerRigtht {
   background: map-get($colors, bg-gray);
