@@ -17,6 +17,7 @@ function App() {
   useEffect(() => {
     apiUserGetList().then((e) => {
       dispatch(getListUsers(e.data));
+      console.log(e.data);
     });
     console.log(process.env.REACT_APP_TEST);
   }, []);
